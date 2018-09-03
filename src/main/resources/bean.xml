@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+	<bean id="product0" class="be.bt.domain.Produit">
+		<!-- Setter injection -->
+		<property name="productId" value="P200"></property>
+		<property name="name" value="thé"></property>
+		<property name="uniPrice" value="4.5"></property>
+	</bean>
+	<!-- Constructor injection -->
+
+	<bean id="product1" class="be.bt.domain.Produit" scope="singleton">
+		<constructor-arg name="productId" value="P100"></constructor-arg>
+		<constructor-arg name="name" value="café"></constructor-arg>
+		<constructor-arg name="uniPrice" value="5.50"></constructor-arg>
+	</bean>
+	<util:list id="produits">
+		<ref bean="product0" />
+		<ref bean="product1" />
+	</util:list>
+
+	<bean id="order1" class="be.bt.domain.Order">
+		<property name="orderId" value="order1"></property>
+		<!-- <property name="date" value="2018-08-9"></property> -->
+		<property name="products" ref="produits"></property>
+	</bean>
+	<bean id="order2" class="be.bt.domain.Order">
+		<property name="orderId" value="order2"></property>
+		<!-- <property name="date" value="2018-08-9"></property> -->
+		<property name="products" ref="produits"></property>
+	</bean>
+	<!-- Couche repository -->
+	<bean id="repository"
+		class="be.bt.Repository.OrdersRepositoryImpl">
+		<property name="order" ref="orders"></property>
+	</bean>
+	<!-- Couche repository -->
+	<bean id="business" class="be.bt.business.OrderBusinessImpl">
+		<property name="repo" ref="repository"></property>
+	</bean>
+	<!-- Couche présentation -->
+	<bean id="client" class="be.bt.client.Client_Orders_Console">
+		<property name="business" ref="business"></property>
+	</bean>
+	<util:list id="orders">
+		<ref bean="order1" />
+		<ref bean="order2" />
+	</util:list>
+</beans>
